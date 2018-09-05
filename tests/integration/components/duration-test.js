@@ -1,5 +1,7 @@
 import { run } from '@ember/runloop';
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 import {
   assertTooltipNotVisible,
   assertTooltipVisible,
@@ -7,82 +9,82 @@ import {
 } from '../../helpers/ember-tooltips';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('tooltip-on-element', 'Integration | Option | duration', {
-  integration: true,
-});
+module('Integration | Option | duration', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('tooltip-on-element hides after the given duration', function(assert) {
+  test('tooltip-on-element hides after the given duration', async function(assert) {
 
-  assert.expect(3);
+    assert.expect(3);
 
-  this.render(hbs`{{tooltip-on-element duration=300}}`);
+    await render(hbs`{{tooltip-on-element duration=300}}`);
 
-  const done = assert.async();
-  const $tooltipTarget = this.$();
+    const done = assert.async();
+    const $tooltipTarget = this.$();
 
-  assertTooltipNotVisible(assert);
-
-  /* Check the tooltip is hidden after the duration */
-
-  triggerTooltipTargetEvent($tooltipTarget, 'mouseenter');
-
-  assertTooltipVisible(assert);
-
-  run.later(() => {
     assertTooltipNotVisible(assert);
-    done();
-  }, 500);
 
-});
+    /* Check the tooltip is hidden after the duration */
 
-test('tooltip-on-element hides before the given duration, if requested', function(assert) {
+    triggerTooltipTargetEvent($tooltipTarget, 'mouseenter');
 
-  assert.expect(3);
+    assertTooltipVisible(assert);
 
-  this.render(hbs`{{tooltip-on-element duration=300}}`);
+    run.later(() => {
+      assertTooltipNotVisible(assert);
+      done();
+    }, 500);
 
-  const $tooltipTarget = this.$();
+  });
 
-  assertTooltipNotVisible(assert);
+  test('tooltip-on-element hides before the given duration, if requested', async function(assert) {
 
-  triggerTooltipTargetEvent($tooltipTarget, 'mouseenter');
+    assert.expect(3);
 
-  assertTooltipVisible(assert);
+    await render(hbs`{{tooltip-on-element duration=300}}`);
 
-  triggerTooltipTargetEvent($tooltipTarget, 'mouseleave');
+    const $tooltipTarget = this.$();
 
-  assertTooltipNotVisible(assert);
-
-});
-
-test('tooltip-on-element uses duration after the first show', function(assert) {
-
-  assert.expect(5);
-
-  this.render(hbs`{{tooltip-on-element duration=300}}`);
-
-  const done = assert.async();
-  const $tooltipTarget = this.$();
-
-  assertTooltipNotVisible(assert);
-
-  triggerTooltipTargetEvent($tooltipTarget, 'mouseenter');
-
-  assertTooltipVisible(assert);
-
-  triggerTooltipTargetEvent($tooltipTarget, 'mouseleave');
-
-  assertTooltipNotVisible(assert);
-
-  /* Check the tooltip is hidden after the duration */
-
-  triggerTooltipTargetEvent($tooltipTarget, 'mouseenter');
-
-  assertTooltipVisible(assert);
-
-  run.later(() => {
     assertTooltipNotVisible(assert);
-    done();
-  }, 500);
 
+    triggerTooltipTargetEvent($tooltipTarget, 'mouseenter');
+
+    assertTooltipVisible(assert);
+
+    triggerTooltipTargetEvent($tooltipTarget, 'mouseleave');
+
+    assertTooltipNotVisible(assert);
+
+  });
+
+  test('tooltip-on-element uses duration after the first show', async function(assert) {
+
+    assert.expect(5);
+
+    await render(hbs`{{tooltip-on-element duration=300}}`);
+
+    const done = assert.async();
+    const $tooltipTarget = this.$();
+
+    assertTooltipNotVisible(assert);
+
+    triggerTooltipTargetEvent($tooltipTarget, 'mouseenter');
+
+    assertTooltipVisible(assert);
+
+    triggerTooltipTargetEvent($tooltipTarget, 'mouseleave');
+
+    assertTooltipNotVisible(assert);
+
+    /* Check the tooltip is hidden after the duration */
+
+    triggerTooltipTargetEvent($tooltipTarget, 'mouseenter');
+
+    assertTooltipVisible(assert);
+
+    run.later(() => {
+      assertTooltipNotVisible(assert);
+      done();
+    }, 500);
+
+  });
 });
