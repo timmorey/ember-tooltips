@@ -361,7 +361,6 @@ export default Component.extend({
           /* If user passes isShown=true, show the tooltip as soon as it's created */
 
           if (this.get('isShown')) {
-            tooltip.show();
             this.show();
           }
         });
