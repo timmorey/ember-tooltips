@@ -5,7 +5,7 @@ import { not } from '@ember/object/computed';
 import $ from 'jquery';
 import { computed } from '@ember/object';
 import { getOwner } from '@ember/application';
-import { run } from '@ember/runloop';
+import { run, scheduleOnce } from '@ember/runloop';
 import { warn } from '@ember/debug';
 import Component from '@ember/component';
 import RSVP from 'rsvp';
@@ -17,7 +17,9 @@ function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.substring(1);
 }
 
-function getOppositeSide(side) {
+function getOppositeSide(placement) {
+  const [side, variant] = placement.split('-');
+
   let oppositeSide;
 
   switch (side) {
@@ -35,7 +37,7 @@ function getOppositeSide(side) {
       break;
   }
 
-  return oppositeSide;
+  return [oppositeSide, variant].filter(Boolean).join('-');
 }
 
 function cleanNumber(stringOrNumber) {
@@ -178,7 +180,7 @@ export default Component.extend({
         const popper = this.get('_tooltip').popperInstance;
 
         if (popper) {
-          run(popper.update);
+          scheduleOnce('afterRender', popper.update);
         }
       }
     } else {
