@@ -314,7 +314,7 @@ export default Component.extend({
 
       try {
         run(() => {
-          const rootElement = document.querySelector(config.APP.rootElement);
+          const rootElement = document.querySelector(config.APP.rootElement || 'body');
           const target = this.get('target');
           const tooltipClassName = this.get('tooltipClassName');
 
